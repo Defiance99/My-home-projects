@@ -13,7 +13,7 @@ body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
 
-/*          Column          */
+/*          Column of calculator      */
 
 
 #CalculatorConteiner tr {
@@ -21,7 +21,7 @@ body {
 }
 
 
-/*          Lines           */
+/*          Lines of calculator           */
 
 #CalculatorConteiner td {
     text-align: center;
@@ -49,7 +49,7 @@ body {
 
 
 
-/*       Other   Classes            */ 
+/*       Other   Classes of calculator           */ 
 
 #CalculatorConteiner .display:hover,.display:active {
     background-color: rgb(250,250,250);
