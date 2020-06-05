@@ -31,7 +31,6 @@ body {
     background-color: rgb(250,250,250);
     cursor: default;
     max-width: 90px;
-    overflow-y: auto;
 }
 
 #CalculatorConteiner td:hover {
@@ -53,6 +52,7 @@ body {
 
 #CalculatorConteiner .display:hover,.display:active {
     background-color: rgb(250,250,250);
+    overflow: hidden;
 }
 
 
