@@ -1,1 +1,1 @@
-Basic calculator, working on clean js without "Eval" or other libraries
+Basic calculator, working on clean js without the "Eval" or other libraries
