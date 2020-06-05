@@ -1,4 +1,5 @@
-var calculatorValues = document.getElementById("CalculatorConteiner").getElementsByTagName("td");
+var calculatorValues = document.getElementById("CalculatorConteiner").getElementsByTagName("tr");
+console.log(calculatorValues);
 let expression = "";
 
 addActForEachElement(calculatorValues);
@@ -6,22 +7,22 @@ addActForEachElement(calculatorValues);
 
 function addActForEachElement(calculatorValues) {
     for (let i = 0; i < calculatorValues.length; i++) {
-        calculatorValues[i].addEventListener("mouseup", () => {
-            let simbol = calculatorValues[i].textContent;
+        calculatorValues[i].addEventListener("mouseup", (element) => {
+            let simbol = element.target.textContent;
             actProcessing(simbol);
         })
     }
-}
+} 
 
 function actProcessing(simbol) {
     if (simbol == "Clear") {
         expression = "";
-        displayingexpression(expression);
+        displayingExpression(expression);
         return;
     }
     if (simbol == "C") {
         expression = expression.slice(0,expression.length - 1);
-        displayingexpression(expression);
+        displayingExpression(expression);
         return;
     }
     if (simbol == "/" || simbol == "*" || simbol == "+" || simbol == "-") {
@@ -35,7 +36,7 @@ function actProcessing(simbol) {
 
     if (expression.length > 21) return;
     expression = expression + simbol;
-    displayingexpression(expression);
+    displayingExpression(expression);
 }
 
 
@@ -59,10 +60,10 @@ function executeExpression(exp) {
         }
     }
 
-    displayingexpression(resultOfExp);
+    displayingExpression(resultOfExp);
 }
 
-function displayingexpression(expression) {
+function displayingExpression(expression) {
     let displayBar = document.getElementById("js-display");
     displayBar.textContent = expression;
 }
