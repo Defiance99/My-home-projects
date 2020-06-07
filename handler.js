@@ -1,7 +1,8 @@
 let calculatorValues = document.getElementById("CalculatorConteiner").getElementsByTagName("tr");
 console.log(calculatorValues);
 let expression = "";
-let pass = true; // in a string must be only one operator
+let passForOperators = true; // in a string must be only one operator
+let passForPoint = true; // mustnt be combined with the operators (+. /. *.  ..);
 let operators = ["/","*","+","-"];
 
 
@@ -19,45 +20,58 @@ function addActForEachElement(calculatorValues) {
 
 
 function actProcessing(simbol) {
+    if (simbol == "x2") {
+        expression = expression * expression;
+        displayingExpression(expression);
+        return;
+    }
+    if (/[+/*]/.test(simbol) && expression.length == 0) return;
     if (simbol == "Clear") {
         expression = "";
-        pass = true;
+        passForOperators = true;
         displayingExpression(expression);
         return;
     }
     if (simbol == "C") {
-        if (operators.includes(expression.slice(-1))) pass = true;
+        if (operators.includes(expression.slice(-1))) passForOperators = true;
         expression = expression.slice(0,expression.length - 1);
         displayingExpression(expression);
         return;
     }
+    //if (simbol == "." && expression.slice(-1) == ".") return;
     if (simbol == "-" && expression.length == 0) {
         expression += simbol;
         displayingExpression(expression);
         return;
     }
+
+
+    if (simbol == "." && !passForOperators) ;
     if (operators.includes(simbol)) {
-        if (!pass && operators.includes(expression.slice(-1))) {
+        if (!passForOperators && operators.includes(expression.slice(-1))) {
             expression = expression.slice(0,expression.length - 1) + simbol;
-            pass = false;
+            passForOperators = false;
             displayingExpression(expression);
             return;
         }
-        if (pass) {
-            pass = false;
+        if (passForOperators) {
+            passForOperators = false;
         }
         else return;
     }
+
+
 
     if (simbol == "=") {
         executeExpression(expression);
         return;
     }
-
     if (expression.length > 21) return;
     expression = expression + simbol;
     displayingExpression(expression);
 }
+
+
 
 
 function executeExpression(exp) {
@@ -72,7 +86,8 @@ function executeExpression(exp) {
 
     console.log(exp,resultOfExp);
 
-    pass = true;
+    passForOperators = true;
+    resultOfExp = resultOfExp.toFixed(3); // floating point
     expression = String(resultOfExp);
     displayingExpression(resultOfExp);
 }
