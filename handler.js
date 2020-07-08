@@ -1,16 +1,16 @@
 let calculatorValues = document.getElementById("CalculatorConteiner").getElementsByTagName("tr");
-console.log(calculatorValues);
 let expression = "";
 let passForOperators = true; // in a string must be only one operator
-let passForPoint = true; // mustnt be combined with the operators (+. /. *.  ..);
+let passForPoint = true; // mustnt be combined with the values (+.  3.2.1  *.  ..);
 let operators = ["/","*","+","-"];
+let keysOfCalculator = ["1","2","3","4","5","6","7","8","9","0",".",...operators,"="];
 
 
-addActForEachElement(calculatorValues);
+addActForEachTableElement(calculatorValues);
+addEventsOnKeyboard(keysOfCalculator);
 
-
-function addActForEachElement(calculatorValues) {
-    for (let i = 0; i < calculatorValues.length; i++) {
+function addActForEachTableElement(calculatorValues) {
+    for (let i = 1; i < calculatorValues.length; i++) {
         calculatorValues[i].addEventListener("mouseup", (element) => {
             let simbol = element.target.textContent;
             actProcessing(simbol);
@@ -19,26 +19,48 @@ function addActForEachElement(calculatorValues) {
 } 
 
 
+function addEventsOnKeyboard(keys) {
+    window.addEventListener("keyup", (event) => {
+        if (event.key == "Backspace") {
+            actProcessing("C");
+        }
+        if (event.key == "Escape") {
+            actProcessing("Clear");
+        }
+        if (event.key == "Enter") {
+            actProcessing("=");
+        }
+        if (keys.includes(event.key)) {
+            
+            actProcessing(event.key);
+        }
+    });
+}
+
 function actProcessing(simbol) {
+    if (expression == "Результат не определен") {
+        expression = "";
+    }// передать ресалт и сделать экспр = ""
     if (simbol == "x2") {
         expression = expression * expression;
+        expression = expression.toString();
         displayingExpression(expression);
         return;
-    }
-    if (/[+/*]/.test(simbol) && expression.length == 0) return;
+    }//желательно переделать
     if (simbol == "Clear") {
         expression = "";
         passForOperators = true;
+        passForPoint = true;
         displayingExpression(expression);
         return;
     }
     if (simbol == "C") {
         if (operators.includes(expression.slice(-1))) passForOperators = true;
+        if (expression.slice(-1) == ".") passForPoint = true;
         expression = expression.slice(0,expression.length - 1);
         displayingExpression(expression);
         return;
     }
-    //if (simbol == "." && expression.slice(-1) == ".") return;
     if (simbol == "-" && expression.length == 0) {
         expression += simbol;
         displayingExpression(expression);
@@ -46,16 +68,42 @@ function actProcessing(simbol) {
     }
 
 
-    if (simbol == "." && !passForOperators) ;
+    if (simbol == ".") {
+        if (operators.includes(expression.slice(-1))) {
+            expression += "0.";
+            passForPoint = false;
+            displayingExpression(expression);
+            return;
+        }
+        if (passForPoint) {
+            passForPoint = false;
+            expression += simbol;
+            displayingExpression(expression);
+            return;
+        }
+        else {
+            return;
+        }
+    }
+
+    if (/[+/*]/.test(simbol) && expression.length == 0) return;
     if (operators.includes(simbol)) {
-        if (!passForOperators && operators.includes(expression.slice(-1))) {
+        if (!passForOperators && operators.includes(expression.slice(-1))) { // replacing the last operator on new
+            passForOperators = false;
+            expression = expression.slice(0,expression.length - 1) + simbol;
+            displayingExpression(expression);
+            return;
+        }
+        if (passForOperators && expression.slice(-1) == ".") {
             expression = expression.slice(0,expression.length - 1) + simbol;
             passForOperators = false;
+            passForPoint = true;
             displayingExpression(expression);
             return;
         }
         if (passForOperators) {
             passForOperators = false;
+            passForPoint = true;
         }
         else return;
     }
@@ -72,8 +120,6 @@ function actProcessing(simbol) {
 }
 
 
-
-
 function executeExpression(exp) {
     let resultOfExp = 0;
 
@@ -87,10 +133,16 @@ function executeExpression(exp) {
     console.log(exp,resultOfExp);
 
     passForOperators = true;
-    resultOfExp = resultOfExp.toFixed(3); // floating point
-    expression = String(resultOfExp);
-    displayingExpression(resultOfExp);
+    if (!resultOfExp) {
+        expression = "Результат не определен";
+        displayingExpression(expression);
+        return;
+    }
+    expression = resultOfExp.toString();
+    displayingExpression(expression);
 }
+
+
 
 
 function displayingExpression(expression) {
@@ -98,5 +150,8 @@ function displayingExpression(expression) {
     displayBar.textContent = expression;
 }
 
+function displayingActivatedElements() {
+
+}
 
 
